@@ -6,32 +6,43 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import static game.Graph.player2Score;
-import static game.Graph.player1Score;
-import static game.Graph.player1Turn;
-
+import static game.Graph.*;
 
 
 public class ELine extends JLabel {
     boolean activated = false;
-    Dimension d;
     int startX;
     int startY;
     ArrayList<Vertex> vertices;
-    public ELine(int w,int h,int x,int y,Color c,ArrayList<Vertex> v){
+    public ELine(int w,int h,int x,int y,ArrayList<Vertex> v){
         vertices=v;
-        d = new Dimension(w,h);
         startX=x;
         startY=y;
-        setBackground(c);
+        setBackground(Color.WHITE);
         setBounds(x,y,w,h);
         setOpaque(true);
         addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseEntered(MouseEvent e){
+                if(!activated) {
+                    if (player1Turn) {
+                        setBackground(Color.RED);
+                    } else {
+                        setBackground(Color.BLUE);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent e){
+                if(!activated) {
+                    setBackground(Color.WHITE);
+                }
+            }
+
+            @Override
             public void mousePressed(MouseEvent e) {
                 if(!activated) {
                     activated=true;
-                    System.out.println("V0:" + vertices.get(0).id + " V1:" + vertices.get(1).id);
                     setBackground(Color.BLACK);
                     repaint();
                     Graph.matrix[vertices.get(0).id][vertices.get(1).id] = 2;
@@ -39,7 +50,7 @@ public class ELine extends JLabel {
                     ArrayList<ArrayList<Vertex>> boxes = checkBox();
                     if (boxes != null) {
                         for (ArrayList<Vertex> box : boxes) {
-                            System.out.println("BOX: " + box.get(0).id + "," + box.get(1).id + "," + box.get(2).id + "," + box.get(3).id);
+                            checkMatching(box);
                             if (player1Turn) {
                                 player1Score++;
                                 Graph.score1.setScore();
@@ -60,6 +71,21 @@ public class ELine extends JLabel {
                 }
             }
         });
+    }
+    public void checkMatching(ArrayList<Vertex> box){
+        int avgX=0;
+        int avgY=0;
+        for(Vertex v:box){
+            avgX+=v.width;
+            avgY+=v.height;
+        }
+        avgX=avgX/4;
+        avgY=avgY/4;
+        for(scoreBox sc: counterBoxes){
+            if(sc.avgX==avgX&&sc.avgY==avgY){
+                sc.setText();
+            }
+        }
     }
     public ArrayList<ArrayList<Vertex>> checkBox(){
         ArrayList<ArrayList<Vertex>> listOfBoxes = new ArrayList<>();
@@ -108,10 +134,6 @@ public class ELine extends JLabel {
         }
         if(listOfBoxes.isEmpty()){
             return null;
-        }
-        System.out.println(listOfBoxes.size());
-        for(ArrayList<Vertex> box:listOfBoxes){
-            System.out.println(box.get(0).id+box.get(1).id+box.get(2).id+box.get(3).id);
         }
         return listOfBoxes;
     }
