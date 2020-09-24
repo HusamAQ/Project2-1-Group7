@@ -13,7 +13,7 @@ public class GameBoard {
     public GameBoard(){
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        graph = new Graph(30,20);
+        graph = new Graph(20,20);
         graph.createGraph();
         panel = new paintBoard(graph);
         frame.setSize(Paths.FRAME_WIDTH,Paths.FRAME_HEIGHT);

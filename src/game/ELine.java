@@ -13,6 +13,7 @@ import static game.Graph.player1Turn;
 
 
 public class ELine extends JLabel {
+    boolean activated = false;
     Dimension d;
     int startX;
     int startY;
@@ -28,30 +29,33 @@ public class ELine extends JLabel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("V0:"+vertices.get(0).id+" V1:"+vertices.get(1).id);
-                setBackground(Color.BLACK);
-                repaint();
-                Graph.matrix[vertices.get(0).id][vertices.get(1).id] = 2;
-                Graph.matrix[vertices.get(1).id][vertices.get(0).id] = 2;
-                ArrayList<ArrayList<Vertex>> boxes = checkBox();
-                if (boxes!=null) {
-                    for (ArrayList<Vertex> box:boxes){
-                        System.out.println("BOX: "+box.get(0).id+","+box.get(1).id+","+box.get(2).id+","+box.get(3).id);
-                        if(player1Turn){
-                            player1Score++;
-                            Graph.score1.setScore();
-                            System.out.println("Player 1: "+player1Score);
-                        }else{
-                            player2Score++;
-                            Graph.score2.setScore();
-                            System.out.println("Player 2: "+player2Score);
+                if(!activated) {
+                    activated=true;
+                    System.out.println("V0:" + vertices.get(0).id + " V1:" + vertices.get(1).id);
+                    setBackground(Color.BLACK);
+                    repaint();
+                    Graph.matrix[vertices.get(0).id][vertices.get(1).id] = 2;
+                    Graph.matrix[vertices.get(1).id][vertices.get(0).id] = 2;
+                    ArrayList<ArrayList<Vertex>> boxes = checkBox();
+                    if (boxes != null) {
+                        for (ArrayList<Vertex> box : boxes) {
+                            System.out.println("BOX: " + box.get(0).id + "," + box.get(1).id + "," + box.get(2).id + "," + box.get(3).id);
+                            if (player1Turn) {
+                                player1Score++;
+                                Graph.score1.setScore();
+                                System.out.println("Player 1: " + player1Score);
+                            } else {
+                                player2Score++;
+                                Graph.score2.setScore();
+                                System.out.println("Player 2: " + player2Score);
+                            }
                         }
-                    }
-                }else{
-                    if(player1Turn){
-                        player1Turn=false;
-                    }else{
-                        player1Turn=true;
+                    } else {
+                        if (player1Turn) {
+                            player1Turn = false;
+                        } else {
+                            player1Turn = true;
+                        }
                     }
                 }
             }
